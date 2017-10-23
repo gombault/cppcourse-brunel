@@ -10,7 +10,8 @@ Neuron :: Neuron () // tableau initialise vide donc taille 0
         {
 			 V=10;
 			 C=1; 
-			 R=20; 
+			 R=20;
+			 Nb_Spikes_=0; 
 		}
          
 vector<double> Neuron :: getT() const
@@ -18,7 +19,7 @@ vector<double> Neuron :: getT() const
 	return T;
 }
 
-vector<double> Neuron :: setT(vector<double> t)			
+void Neuron :: setT(vector<double> t)			
 { 		
 	T=t;	
 }		
@@ -43,9 +44,9 @@ void Neuron :: setV(double v)
 	V=v;
 }	
 
-void Neuron :: setNb_Spikes_(int s)
+void Neuron :: setNb_Spikes_()
 {
-	Nb_Spikes_=s;
+	Nb_Spikes_=Nb_Spikes_ + 1; 
 }		
 
 void Neuron :: setC(double c)
@@ -72,10 +73,18 @@ void Neuron :: fill_T(double t)
 void Neuron :: update(double I)
 {
 	
-	double h(5);
+	double h(1);
 	double V_update;
 	V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C)));// updates the neuron state from time t to t+T ou T=n*h qvec n nbre de step
 	V=V_update;
 	
  }                                                                                                            
 	
+void Neuron :: update_connection(double I, double J)
+{
+	update(I);
+	V += J;
+	
+	
+	
+} 
