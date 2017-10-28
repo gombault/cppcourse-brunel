@@ -8,13 +8,17 @@ using namespace std;
 
 Neuron :: Neuron () 
         {
-			 V=10;
+			 V=0;
 			 C=1; 
 			 R=20;
 			 Nb_Spikes_=0; 
-			 //int n=50;//nbre de steps
-			 //int h=1; // temps d'un step
+			 for (size_t i = 0; i< buffer.size(); ++i)
+			 {
+				 buffer[i] = 0;
+			 }
+			 
 			 T_Clock=0;
+			 
 		}
 int Neuron :: getD() const
 { 
@@ -26,13 +30,18 @@ int Neuron :: getT_Clock() const
 	return T_Clock;
 }
 
-void Neuron :: setT_Clock( int t)	
+void Neuron :: incrementT_Clock( int t)	
 {
 	T_Clock= T_Clock+t;
-}		
+}	
+
+array<double,16> Neuron :: getbuffer() const
+{
+	 return buffer;
+}	 
          
 vector<double> Neuron :: getT() const
-{ 
+{ 				
 	return T;
 }
 
@@ -112,24 +121,24 @@ void Neuron :: update(double I)
 	 }
 	 else
 	 {  	
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C)));// updates the neuron state from time t to t+T ou T=n*h qvec n nbre de step
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C)));// updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step
 		 V=V_update;
 	 }	
  }                                                                                                            
 	
-void Neuron :: update_connection(double I, double J, double arrival) // update l'etat du neuron du temps t=tclock to t=tclock+steps-1 le neuron passe de V=10 a V=10+J
+void Neuron :: update_connection(double J,int arrival) // update the neuron from time t=tclock to t=tclock+steps-1 the neuron passes from V=10 to V=10+J
 {
-	int h=1;
 	receive_spike(T_Clock, J);
-
-		  int nb_step = arrival/h;
-	      V += buffer[(nb_step%(D+1))]; // V+= a ce au'il y a ds la case du tableau, 0, J ou 2J...
-	      buffer[(nb_step+D)%(D+1)]=0; // remettre la case du tableau a 0
+	int set_spike = ((arrival+D+1)%(D+1));
+	
+	std::cout << "update " << set_spike << std::endl;
+	V += buffer[set_spike]; // V takes the value of what contain the vector at the indice 
+    //buffer[(arrival)%(D+1)]=0; // remettre la case du tableau a 0
 } 
 
-void Neuron :: receive_spike(double arrival, double J) // recoit un spike au temps arrival avec J, si plus d'un spike arrive en meme temps on additione les indices  arrival = 
-{
-	int h(1);
-	int nb_step = arrival/h;
-	buffer[(nb_step+D)%(D+1)]+=J; 
+void Neuron :: receive_spike(int arrival, double J) // receive a spike at time arrival with J
+{	
+	std::cout << "receive " << (arrival)%(D+1) << std::endl;
+	
+	buffer[(arrival)%(D+1)]+=J; 
 }	 

@@ -9,32 +9,32 @@ class Neuron
 	
 private:
 
-double V; //potentiel de la membrane 
+double V; //membran potential
 
 int Nb_Spikes_;
 
-vector<double> T; // temps ou le pic a lieu = temps de refraction (2ms)
+vector<double> T; // refraction time (2ms)
 
-double C; // conductance du neuron
+double C; // conductance 
 
 double R; // resistance 
 
-int T_Clock; // temps propre au neuron
+int T_Clock; // local time
 
 static const int D=15 ; // delay
 
-array<int,(D+1)> buffer; // tableau qui store les J recu au differents t_spike +D
+array<double,(D+1)> buffer; //  store the J receive at the different t_spike +D
 
 
 public:
 
 Neuron ();
 
+// getters and setters
+
 int getD() const;
 
 int getT_Clock() const;
-
-void setT_Clock( int t);
 
 double getV() const;
 
@@ -52,16 +52,22 @@ void setV(double v);
 
 void setNb_Spikes_();
 
-void update(double I); //change l'etat du neurone, du temps t au temps t+T ou T=n*h
+array<double,16> getbuffer() const;
 
-bool IsNeuron_refractory(double Vth, int simtime); // nous dit si le neuron est refracte 
+//functions
+
+void incrementT_Clock( int t);
+
+void update(double I); // update the neuron from time t to t+T where T=n*h
+
+bool IsNeuron_refractory(double Vth, int simtime); 
 
 void fill_T(double t);
 
 bool spike(double vth);
 
-void update_connection(double I, double J, double arrival); // update l'etat du neuron du temps t=tclock to t=tclock+steps-1
+void update_connection(double J,int arrival); // update the neuron from time t=tclock to t=tclock+steps-1
 
-void receive_spike(double arrival, double J); // recoit un spike au temps arrival avec J, si plus d'un spike arrive en meme temps on additione les indices 
+void receive_spike(int arrival, double J); // receive a spike at time arrival with J, if more than a spike arrive at the same time we sum the indices 
 	
 };
