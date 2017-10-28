@@ -70,7 +70,7 @@ void Neuron :: setV(double v)
 	V=v;
 }	
 
-void Neuron :: setNb_Spikes_()
+void Neuron :: incrementNb_Spikes_()
 {
 	Nb_Spikes_=Nb_Spikes_ + 1; 
 }		
@@ -108,16 +108,17 @@ void Neuron :: fill_T(double t)
 void Neuron :: update(double I)
 {
 	int Vth=20;
-	int h=1;
+	double h=0.1;
 	double V_update;
 	
 	if (spike(Vth))
 	{
+		incrementNb_Spikes_();
 		fill_T(T_Clock);
 	} 
 	 if (IsNeuron_refractory(Vth,T_Clock))
 	 {
-		 V=10;
+		 V=0.0;
 	 }
 	 else
 	 {  	

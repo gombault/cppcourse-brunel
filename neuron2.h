@@ -50,7 +50,7 @@ void setC(double c);
 
 void setV(double v);
 
-void setNb_Spikes_();
+void incrementNb_Spikes_();
 
 array<double,16> getbuffer() const;
 

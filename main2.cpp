@@ -7,9 +7,9 @@ int main()
 {
 	
 double T_start(0); // time where the simulation starts
-double T_stop(180); // time where the simulation ends
+double T_stop(5000); // time where the simulation ends
 int n(50); // number of  step
-int h(1); // time of a step
+double h(0.1); // time of a step
 int simtime(n*h); // simulation time
 double Vth(20); // potentiel value where the neuron spike
 double input_current(0); // value of current
@@ -53,7 +53,7 @@ while(simtime < T_stop)
 	else if (neuron1.getV()>Vth) // if neuron1 spike, his potential membran go back to 0 and neuron2 shows a respond with a delay of 15ms
 	{
 		neuron1.update(input_current);
-		neuron1.setNb_Spikes_();
+		//neuron1.incrementNb_Spikes_();
 	    fichier << " il y a eu " << neuron1.getNb_Spikes_() <<" spikes " << endl;
 		neuron1.setV(0);
 		neuron2.update_connection(J,neuron1.getT().back());
