@@ -25,6 +25,8 @@ static const int D=15 ; // delay
 
 array<double,(D+1)> buffer; //  store the J receive at the different t_spike +D
 
+double Vext;
+
 
 public:
 
@@ -50,11 +52,11 @@ void setC(double c);
 
 void setV(double v);
 
-void incrementNb_Spikes_();
-
 array<double,16> getbuffer() const;
 
 //functions
+
+void incrementNb_Spikes_();
 
 void incrementT_Clock( int t);
 

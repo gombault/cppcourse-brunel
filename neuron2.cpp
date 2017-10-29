@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
+#include <random>
 using namespace std;
 
 
@@ -12,6 +13,7 @@ Neuron :: Neuron ()
 			 C=1; 
 			 R=20;
 			 Nb_Spikes_=0; 
+			 Vext=0;
 			 for (size_t i = 0; i< buffer.size(); ++i)
 			 {
 				 buffer[i] = 0;
@@ -20,6 +22,7 @@ Neuron :: Neuron ()
 			 T_Clock=0;
 			 
 		}
+		
 int Neuron :: getD() const
 { 
 	return D;
@@ -121,8 +124,11 @@ void Neuron :: update(double I)
 		 V=0.0;
 	 }
 	 else
-	 {  	
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C)));// updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step
+	 {  
+		 poisson_distribution<> poisson(Vext*0.1*10000*h*0.1);
+		 random_device rd;	
+		 mt19937 gen(rd());
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + poisson(gen);// updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step
 		 V=V_update;
 	 }	
  }                                                                                                            
@@ -134,7 +140,7 @@ void Neuron :: update_connection(double J,int arrival) // update the neuron from
 	
 	std::cout << "update " << set_spike << std::endl;
 	V += buffer[set_spike]; // V takes the value of what contain the vector at the indice 
-    //buffer[(arrival)%(D+1)]=0; // remettre la case du tableau a 0
+    buffer[(arrival)%(D+1)]=0; // remettre la case du tableau a 0
 } 
 
 void Neuron :: receive_spike(int arrival, double J) // receive a spike at time arrival with J
