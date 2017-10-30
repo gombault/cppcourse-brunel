@@ -108,16 +108,18 @@ void Neuron :: fill_T(double t)
 }	
 	
 
-void Neuron :: update(double I)
+bool Neuron :: update(double I,double J,int arrival)
 {
 	int Vth=20;
 	double h=0.1;
 	double V_update;
+	bool Spike = false;
 	
 	if (spike(Vth))
 	{
 		incrementNb_Spikes_();
 		fill_T(T_Clock);
+		Spike=true;
 	} 
 	 if (IsNeuron_refractory(Vth,T_Clock))
 	 {
@@ -125,15 +127,22 @@ void Neuron :: update(double I)
 	 }
 	 else
 	 {  
-		 poisson_distribution<> poisson(Vext*0.1*10000*h*0.1);
-		 random_device rd;	
-		 mt19937 gen(rd());
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + poisson(gen);// updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step
+		 receive_spike(T_Clock, J);
+	     int set_spike = ((arrival+D+1)%(D+1));
+	
+	     //std::cout << "update " << set_spike << std::endl;
+		 static poisson_distribution<> poisson(Vext*0.1*10000*h*0.1); // poisson
+		 static random_device rd;	
+		 static mt19937 gen(rd());
+		 
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen);// updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step
 		 V=V_update;
+		 buffer[(arrival)%(D+1)]=0; // remettre la case du tableau a 0
 	 }	
+	 return Spike;
  }                                                                                                            
 	
-void Neuron :: update_connection(double J,int arrival) // update the neuron from time t=tclock to t=tclock+steps-1 the neuron passes from V=10 to V=10+J
+/*void Neuron :: update_connection(double J,int arrival) // update the neuron from time t=tclock to t=tclock+steps-1 the neuron passes from V=10 to V=10+J
 {
 	receive_spike(T_Clock, J);
 	int set_spike = ((arrival+D+1)%(D+1));
@@ -141,11 +150,11 @@ void Neuron :: update_connection(double J,int arrival) // update the neuron from
 	std::cout << "update " << set_spike << std::endl;
 	V += buffer[set_spike]; // V takes the value of what contain the vector at the indice 
     buffer[(arrival)%(D+1)]=0; // remettre la case du tableau a 0
-} 
+}*/ 
 
 void Neuron :: receive_spike(int arrival, double J) // receive a spike at time arrival with J
 {	
-	std::cout << "receive " << (arrival)%(D+1) << std::endl;
+	//std::cout << "receive " << (arrival)%(D+1) << std::endl;
 	
 	buffer[(arrival)%(D+1)]+=J; 
 }	 

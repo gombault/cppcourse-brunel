@@ -27,6 +27,8 @@ array<double,(D+1)> buffer; //  store the J receive at the different t_spike +D
 
 double Vext;
 
+double W; //w=g pour neuron inhibitor et c=J pour neuron excitator
+
 
 public:
 
@@ -60,7 +62,7 @@ void incrementNb_Spikes_();
 
 void incrementT_Clock( int t);
 
-void update(double I); // update the neuron from time t to t+T where T=n*h
+bool update(double I,double J, int arrival); // update the neuron from time t to t+T where T=n*h
 
 bool IsNeuron_refractory(double Vth, int simtime); 
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include "neuron2.h"
 using namespace std;
 
 class Network
@@ -14,13 +15,16 @@ class Network
 	int Ce; // Number of excitatory connections
 	double Je; // currant of excitatory neuron
 	double Ji; // currant of inhibitory neuron
-	int g; // g=Ji/Je
 	int Cext; // connections from the rest of the brain, this is randomly generated spikes cf Poisson
-	array<array<int,12500>,12500> connection; 
+	vector<vector<double>> connection;
+	vector<Neuron> tab_neuron;
+	double g;
+	double J;
 	
 	public:
 	
 	Network();
 	void fill_connection();
-	int random(int N1,int N2);
+	int random(int start,int end);
+	void update();
 };
