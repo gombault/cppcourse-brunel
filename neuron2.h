@@ -60,10 +60,6 @@ array<double,16> getbuffer() const;
      *    functions
      ******************************************************************/
 
-void incrementNb_Spikes_();
-
-void incrementT_Clock( int t);
-
 bool update(double I, int arrival); /*!< update the neuron from time t to t+T where T=n*h */
 
 bool IsNeuron_refractory(double Vth, int simtime); /*!< return true if have spiked and set his membran potentiel to 0 during 2ms */

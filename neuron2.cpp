@@ -29,10 +29,6 @@ int Neuron :: getT_Clock() const
 	return T_Clock;
 }
 
-void Neuron :: incrementT_Clock( int t)	
-{
-	T_Clock= T_Clock+t;
-}	
 
 array<double,16> Neuron :: getbuffer() const
 {
@@ -62,12 +58,7 @@ int Neuron :: getNb_Spikes_() const
 void Neuron :: setV(double v)
 {
 	V=v;
-}	
-
-void Neuron :: incrementNb_Spikes_()
-{
-	Nb_Spikes_=Nb_Spikes_ + 1; 
-}		
+}			
 
 bool Neuron :: spike(double Vth)
 {
@@ -80,7 +71,7 @@ bool Neuron :: spike(double Vth)
 	
 bool Neuron:: IsNeuron_refractory(double Vth, int simtime)
 {
-	if ((V>Vth) and ((simtime - T.back()) <= 2 ))
+	if ((V=0) and ((simtime - T.back()) <= 20 ))
 	{
 		return true;
 	}
@@ -99,7 +90,7 @@ bool Neuron :: update(double I,int arrival)
 	T_Clock = arrival + D;
 	if (spike(Vth))
 	{
-		incrementNb_Spikes_();
+		++ Nb_Spikes_;
 		fill_T(T_Clock);
 		V=0.0;
 		Spike=true;
@@ -109,7 +100,7 @@ bool Neuron :: update(double I,int arrival)
 		Spike=false;
 	}
 	
-	 if (IsNeuron_refractory(Vth, T_Clock))
+	if  ((!T.empty()) and ((T_Clock - T.back()) <= 20 ))
 	 {
 		 V=0.0;
 	 }
@@ -117,13 +108,11 @@ bool Neuron :: update(double I,int arrival)
 	 {  
 	     int set_spike = ((T_Clock)%(D+1));
 	     
-	    // std::cout << "update " << set_spike << std::endl;
-	
-		 //static poisson_distribution<> poisson(2);  /*!< poisson */
-		 //static random_device rd;	
-		 //static mt19937 gen(rd());
+		 static poisson_distribution<> poisson(2);  /*!< poisson */
+		 static random_device rd;	
+		 static mt19937 gen(rd());
 		 
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike]; //+ poisson(gen)*0.1;/*!< updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step */
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen)*0.1; /*!< updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step */
 		 V=V_update;
 	
 		 buffer[(T_Clock)%(D+1)]=0; /*!< put the case to 0 */
@@ -134,6 +123,5 @@ bool Neuron :: update(double I,int arrival)
 
 void Neuron :: receive_spike (double J) /*!< receive a spike at time arrival with J */
 {	
-	//std::cout << "receive " << (arrival)%(D+1) << std::endl;
 	buffer[(T_Clock + D)%(D+1)]+=J; 
 }	 
