@@ -32,15 +32,28 @@ Network :: Network ()
 		
 void Network :: fill_connection()
  {
-	 for(int i=0; i<12500; ++i) // we go through the vecror of connections verticaly 
-	 {
+	 for(int i=0; i<Ne; ++i) // we go through the vecror of connections verticaly 
+      {
+		  static random_device rd; //random law
+	      static mt19937 gen(rd());
+	      static uniform_int_distribution<> connection_from(0,Ne-1); // to chose randomly betwenn 0 and 10000 which excitatory neurons will have connections 
+	
 		 for(int j=0; j<0.1*Ne; ++j) // we go through the vecror horizontally first on the  10000 cases for the  10000 excitatory neurons 
 		 {
-			  connection[random(0,Ne)][i]+=Je; // we call random to chose randomly betwenn 0 and 10000 which excitatory neurons will have connections 
+			  connection[connection_from(gen)][i]+=Je; // we fill connection tab in the index given by the random law
+			 
 		  }
+	  }
+	  
+	  for(int i=Ne; i<Ntot; ++i) // we go through the vecror of connections verticaly 
+	  {
+		  static random_device rd;
+	      static mt19937 gen(rd());
+	      static uniform_int_distribution<> connection_from(Ne,Ntot-1); // to chose randomly betwenn 10000 and 12500 which inhibithory neurons will have connections
+	      
 		  for(int h=0; h<0.1*Ni; ++h) // then we go through the vector on the last 2500 cases for the inhibithory neurons 
 		  {
-			 connection[random(Ne,Ntot)][i]+=Ji; // we call random to chose randomly betwenn 10000 and 2500 which inhibitory neurons will have connections 
+			 connection[connection_from(gen)][i]+=Ji; // we fill connection tab in the index given by the random law
 		  }
 	 }
  }
@@ -66,7 +79,7 @@ void Network :: update(int time)
 			{
 				if(connection[i][j]!=0) // we look with which neurons the spiking one is connected 
 				{
-					tab_neuron[j].receive_spike(Je); // each connected neurons receive Je in their buffer 
+					tab_neuron[j].receive_spike(connection[i][j]); // each connected neurons receive Je in their buffer 
 				}
 			}
 		}
@@ -88,7 +101,7 @@ void Network :: update(int time)
 			{
 				if(connection[i][j]!=0)
 				{
-					tab_neuron[j].receive_spike(Ji);  // each connected neurons receive Ji in their buffer 
+					tab_neuron[j].receive_spike(connection[i][j]);  // each connected neurons receive Ji in their buffer 
 				}
 			}
 		}
@@ -97,14 +110,5 @@ void Network :: update(int time)
 	fichier.close();
 }	
 
-/*******************************************************************************************
-     *    fonction that chose randomly number in a interval to fill the connections tab
-     ****************************************************************************************/
+
  
-int Network :: random(int start, int end)
-{
-	static random_device rd;
-	static mt19937 gen(rd());
-	static uniform_int_distribution<> connection_from(start,end-1);
-	return connection_from(gen);
-}

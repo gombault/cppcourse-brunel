@@ -32,14 +32,6 @@ class Network
 	void fill_connection(); 
 	
 /**
- * @brief fonction that chose randomly number in a interval to fill the connections tab
- * @param start an argument to define the beginning of my interval
- * @param end an argument to define the end of my interval 
- * @return the number chosen in the interval
- */			
-	int random(int start,int end); 
-	
-/**
  * @brief update the neuron from time t to t+T where T=n*h
  * @param time the simulation time
  */	
