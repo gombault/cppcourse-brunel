@@ -9,25 +9,25 @@ class Neuron
 	
 private:
 
-/**************************************************************//**
+/***************************************************************//****
      *   attributs
      ******************************************************************/
 
-double V; /*!< membran potential */
+double V; //! membran potential 
 
-int Nb_Spikes_;
+int Nb_Spikes_; //! number spikes
 
-vector<double> T; /*!< vector of spike times */
+vector<double> T; //! vector of spike times 
 
-double C; /*!< conductance */
+double C; //! conductance 
 
-double R; /*!< resistance */
+double R; //! resistance 
 
-int T_Clock; /*!< local time */
+int T_Clock; //! local time 
 
-static const int D=15 ; /*!<delay */
+static const int D=15 ; //!delay 
 
-array<double,(D+1)> buffer; /*!< store the J receive at the different t_spike +D */
+array<double,(D+1)> buffer; //! store the J receive at the different t_spike +D 
 
 double Vext;
 
@@ -82,7 +82,7 @@ void setV(double v);
      *    functions
      ******************************************************************/
 /**
- * update the neuron from time t to t+T where T=n*h with poisson
+ * @brief update the neuron from time t to t+T where T=n*h with poisson
  * @param I the input current
  * @param arrival the time when we call update
  * @return if it spike or not
@@ -90,7 +90,7 @@ void setV(double v);
 bool update(double I, int arrival); 
 
 /**
- * return true if have spiked and set his membran potentiel to 0 during 2ms
+ * @brief return true if have spiked and set his membran potentiel to 0 during 2ms
  * @param Vth the treeshold value which is 20
  * @param simtime the simulation time
  * @return if it is refractory or not 
@@ -98,26 +98,26 @@ bool update(double I, int arrival);
 bool IsNeuron_refractory(double Vth, int simtime); 
 
 /**
- * fill the vector with the differents times where the neuron have spiked
+ * @brief fill the vector with the differents times where the neuron have spiked
  * @param t the time when the neuron have spiked
  */
 void fill_T(double t); 
 
 /**
- * says if the neuron spike or not
+ * @brief says if the neuron spike or not
  * @param Vth the treeshold value which is 20
  * @return if it spike or not
  */
 bool spike(double vth);
  
 /**
- * receive a spike at time arrival with J, if more than a spike arrive at the same time we sum the indices
+ * @brief receive a spike at time arrival with J, if more than a spike arrive at the same time we sum the indices
  * @param J the current send by the neuron which have spiked
  */
 void receive_spike(double J);
 
 /**
- * update the neuron from time t to t+T where T=n*h without poisson
+ * @brief update the neuron from time t to t+T where T=n*h without poisson
  * @param I the input current
  * @param arrival the time when we call update
  * @return if it spike or not

@@ -54,7 +54,7 @@ void Neuron :: setV(double v)
 	V=v;
 }			
 
-bool Neuron :: spike(double Vth) /*!< return trrue if the neuron spike */
+bool Neuron :: spike(double Vth) // return trrue if the neuron spike 
 {
 	if (V>Vth)
 	{
@@ -63,7 +63,7 @@ bool Neuron :: spike(double Vth) /*!< return trrue if the neuron spike */
 	else return false;
 }	
 	
-bool Neuron:: IsNeuron_refractory(double Vth, int simtime) /*!< return true if a neuron is refractory, during refractory time (20 step) V=0 */
+bool Neuron:: IsNeuron_refractory(double Vth, int simtime) // return true if a neuron is refractory, during refractory time (20 step) V=0 
 {
 	if ((V=0) and ((simtime - T.back()) <= 20 ))
 	{
@@ -73,7 +73,7 @@ bool Neuron:: IsNeuron_refractory(double Vth, int simtime) /*!< return true if a
 	
 }
 
-void Neuron :: fill_T(double t) /*!< fill the vector with the neuron's times of spikes */
+void Neuron :: fill_T(double t) // fill the vector with the neuron's times of spikes 
 {
 	T.push_back(t);
 }	
@@ -83,7 +83,7 @@ bool Neuron :: update(double I,int arrival)
 {
 	T_Clock = arrival + D;
 	
-	/**************************************************************************************************//**
+	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
      * we initialize the bool Spike to true (this bool is what the fonction return) else, it is false
      * we store the time of the spike in the vector T of the neuron
@@ -102,7 +102,7 @@ bool Neuron :: update(double I,int arrival)
 		Spike=false;
 	}
 	
-	/**************************************************************************************************//**
+	/****************************************************************************************************
      *  if the neuron has spiked, it is refractory
      * hisd potential membrane is 0 during 20 steps
      ****************************************************************************************************/
@@ -112,38 +112,38 @@ bool Neuron :: update(double I,int arrival)
 		 V=0.0;
 	 }
 	 
-	 /**************************************************************************************************//**
+	 /****************************************************************************************************
      *  if the neuron didn't spike, we calculate the new value of the potentiel membran V 
      * we use poisson, the buffer and the current 
      ****************************************************************************************************/
 	 
 	 else
 	 {  
-	     int set_spike = ((T_Clock)%(D+1)); /*!< for the index of the tab where we have to look in the buffer */
+	     int set_spike = ((T_Clock)%(D+1)); //for the index of the tab where we have to look in the buffer 
 	     
-		 static poisson_distribution<> poisson(2);  /*!< poisson */
+		 static poisson_distribution<> poisson(2);  // poisson 
 		 static random_device rd;	
 		 static mt19937 gen(rd());
 		 
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen)*0.1; /*!< updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step */
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen)*0.1; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
 		 V=V_update;
 	
-		 buffer[(T_Clock)%(D+1)]=0; /*!< put the case to 0 */
+		 buffer[(T_Clock)%(D+1)]=0; // put the case to 0 
 	 }	
 	 ++T_Clock;
 	 return Spike;
  }                                                                                                            
 
-void Neuron :: receive_spike (double J) /*!< receive a spike at time arrival with J */
+void Neuron :: receive_spike (double J) // receive a spike at time arrival with J 
 {	
-	buffer[(T_Clock + D)%(D+1)]+=J; /*!< store the J in the good index of the buffer */
+	buffer[(T_Clock + D)%(D+1)]+=J; // store the J in the good index of the buffer 
 }	 
 
 bool Neuron :: update_test(double I,int arrival)
 {
 	T_Clock = arrival + D;
 	
-	/**************************************************************************************************//**
+	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
      * we initialize the bool Spike to true (this bool is what the fonction return) else, it is false
      * we store the time of the spike in the vector T of the neuron
@@ -162,7 +162,7 @@ bool Neuron :: update_test(double I,int arrival)
 		Spike=false;
 	}
 	
-	/**************************************************************************************************//**
+	/*****************************************************************************************************
      *  if the neuron has spiked, it is refractory
      * hisd potential membrane is 0 during 20 steps
      ****************************************************************************************************/
@@ -172,20 +172,20 @@ bool Neuron :: update_test(double I,int arrival)
 		 V=0.0;
 	 }
 	 
-	 /**************************************************************************************************//**
+	 /****************************************************************************************************
      *  if the neuron didn't spike, we calculate the new value of the potentiel membran V 
      * we use poisson, the buffer and the current 
      ****************************************************************************************************/
 	 
 	 else
 	 {  
-	     int set_spike = ((T_Clock)%(D+1)); /*!< for the index of the tab where we have to look in the buffer */
+	     int set_spike = ((T_Clock)%(D+1)); // for the index of the tab where we have to look in the buffer 
 	     
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike]; /*!< updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step */
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike]; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
 		 V=V_update;
-	
-		 buffer[(T_Clock)%(D+1)]=0; /*!< put the case to 0 */
-	 }	
+	 }
+	 	
+	 buffer[(T_Clock)%(D+1)]=0; // put the case to 0 
 	 ++T_Clock;
 	 return Spike;
  }                            
