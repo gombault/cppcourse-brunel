@@ -8,7 +8,7 @@ int main()
 	
 double T_start(0); /*!< time where the simulation starts */
 double T_stop(5000); /*!< time where the simulation ends */
-double simtime(0);
+double simtime(0); /*!< simulation time */
 double Vth(20); /*!< potentiel value where the neuron spike */
 double input_current(0); /*!< value of current */
 double J(0.1); /*!< current passed to other neurons when spike */
@@ -58,7 +58,7 @@ while(simtime < T_stop)
 		input_current=0;
 	}
 
-	 if (neuron1.getV() > Vth) /*!< if neuron1 spike, his potential membran go back to 0 and neuron2 shows a respond with a delay of 15ms */
+	 if (neuron1.getV() > Vth) /*!< if neuron1 spike, his potential membran go back to 0 and neuron2 shows a respond with a delay of 1,5ms */
 	{
 		neuron1.update(input_current, simtime);
 		neuron2.receive_spike(J);
@@ -71,14 +71,14 @@ while(simtime < T_stop)
 	}	
 	
 		
-	++simtime;
-	neuron1.incrementT_Clock(1);/*!< at every step, local time of neuron 1 and 2 are incremented */
-	neuron2.incrementT_Clock(1);
+	++simtime; /*!< we increment T_Clock at every step */
 	fichier << "la valeur du potentiel de la membrane du neuron 1 au temps :" << simtime*0.1 << "ms, vaut: " << neuron1.getV() << " et celle du neuron 2 vaut :" << neuron2.getV() << endl;
 	
 
 }
+
 fichier.close();
+
 }	
 	
 

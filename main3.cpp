@@ -5,7 +5,6 @@ using namespace std;
 
 int main()
 {
-
     int T_stop(1000); /*!< time where the simulation ends */
     int simtime(0); /*!< simulation time*/
     
@@ -25,7 +24,7 @@ int main()
     network.fill_connection();
     
     /**************************************************************//**
-     *  for each step we update the network
+     *  for each step we update the network amd increment simtime
      ******************************************************************/
     
     while(simtime < T_stop)
@@ -39,8 +38,7 @@ int main()
 		}
 	
 	    network.update(simtime);
-	    ++ simtime;
-	    
+	    ++ simtime;   
 	}
 	
 	
