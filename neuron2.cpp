@@ -14,12 +14,14 @@ Neuron :: Neuron ()
 			 R=20;
 			 Nb_Spikes_=0; 
 			 Vext=2;
+			 buffer.resize(D+1);
 			 for (size_t i = 0; i< buffer.size(); ++i)
 			 {
 				 buffer[i] = 0;
 			 }
 			 
 			 T_Clock=0;
+			 
 			 
 		}
 		
@@ -54,7 +56,7 @@ void Neuron :: setV(double v)
 	V=v;
 }			
 
-bool Neuron :: spike(double Vth) // return trrue if the neuron spike 
+bool Neuron :: spike(double Vth) // return true if the neuron spike 
 {
 	if (V>Vth)
 	{
@@ -81,7 +83,7 @@ void Neuron :: fill_T(double t) // fill the vector with the neuron's times of sp
 
 bool Neuron :: update(double I,int arrival)
 {
-	T_Clock = arrival + D;
+	T_Clock = arrival;
 	
 	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
@@ -119,29 +121,29 @@ bool Neuron :: update(double I,int arrival)
 	 
 	 else
 	 {  
-	     int set_spike = ((T_Clock)%(D+1)); //for the index of the tab where we have to look in the buffer 
+	     int set_spike = ((T_Clock)%buffer.size()); //for the index of the tab where we have to look in the buffer 
 	     
-		 static poisson_distribution<> poisson(2);  // poisson 
+		 static poisson_distribution<> poisson(0.9);  // poisson 
 		 static random_device rd;	
 		 static mt19937 gen(rd());
 		 
 		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen)*0.1; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
-		 V=V_update;
-	
-		 buffer[(T_Clock)%(D+1)]=0; // put the case to 0 
+		 V=V_update; 
 	 }	
+	 
+	 buffer[(T_Clock)%buffer.size()]=0; // put the case to 0 
 	 ++T_Clock;
 	 return Spike;
  }                                                                                                            
 
 void Neuron :: receive_spike (double J) // receive a spike at time arrival with J 
 {	
-	buffer[(T_Clock + D)%(D+1)]+=J; // store the J in the good index of the buffer 
+	buffer[(T_Clock + D)%buffer.size()]+=J; // store the J in the good index of the buffer 
 }	 
 
 bool Neuron :: update_test(double I,int arrival)
 {
-	T_Clock = arrival + D;
+	T_Clock = arrival;
 	
 	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
@@ -179,13 +181,13 @@ bool Neuron :: update_test(double I,int arrival)
 	 
 	 else
 	 {  
-	     int set_spike = ((T_Clock)%(D+1)); // for the index of the tab where we have to look in the buffer 
+	     int set_spike = ((T_Clock)%buffer.size()); // for the index of the tab where we have to look in the buffer 
 	     
 		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike]; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
 		 V=V_update;
 	 }
 	 	
-	 buffer[(T_Clock)%(D+1)]=0; // put the case to 0 
+	 buffer[(T_Clock)%buffer.size()]=0; // put the case to 0 
 	 ++T_Clock;
 	 return Spike;
  }                            

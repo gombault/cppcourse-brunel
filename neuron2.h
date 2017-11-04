@@ -9,29 +9,29 @@ class Neuron
 	
 private:
 
-/***************************************************************//****
+/***************************************************************************
      *   attributs
      ******************************************************************/
 
-double V; //! membran potential 
+double V; //!< membran potential 
 
-int Nb_Spikes_; //! number spikes
+int Nb_Spikes_; //!< number spikes
 
-vector<double> T; //! vector of spike times 
+vector<double> T; //!< vector of spike times 
 
-double C; //! conductance 
+double C; //!< conductance 
 
-double R; //! resistance 
+double R; //!< resistance 
 
-int T_Clock; //! local time 
+int T_Clock; //!< local time 
 
-static const int D=15 ; //!delay 
+static const int D=15 ; //!< delay 
 
-array<double,(D+1)> buffer; //! store the J receive at the different t_spike +D 
+vector<int> buffer; //!< store the J receive at the different t_spike +D 
 
 double Vext;
 
-/**************************************************************//**
+/**************************************************************************
      *    constants 
      ******************************************************************/
 
@@ -45,7 +45,7 @@ public:
 
 Neuron ();
 
-/**************************************************************//**
+/************************************************************************
      *    getters and setters
      ******************************************************************/
 /**
@@ -78,7 +78,7 @@ int getNb_Spikes_() const;
  */
 void setV(double v);
 
-/**************************************************************//**
+/***********************************************************************
      *    functions
      ******************************************************************/
 /**
