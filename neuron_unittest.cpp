@@ -16,14 +16,14 @@ TEST (NeuronTest, PositiveInput)
 	double I (1.0);
 	
 	// first update test
-	neuron.update_test(I,0);
+	neuron.update_test(I);
 	EXPECT_EQ(20.0*(1.0-std::exp(-0.1/20.0)), neuron.getV());
 	neuron.setV(0);
 	
 	// test after numerous updates
 	for (int i(0); i<10000; ++i)
 	{
-		neuron.update_test(I,0);
+		neuron.update_test(I);
 	}
 	// the membrane potential should tend to 20 but never reach v=20
 	// so the neuron should never spike
@@ -35,7 +35,7 @@ TEST (NeuronTest, PositiveInput)
 	I=0;
 	for(int i(0); i<2000; ++i)
 	{
-		neuron.update_test(I,0);
+		neuron.update_test(I);
 	}
 	EXPECT_NEAR(0, neuron.getV(), 1e-3);
 	neuron.setV(0);
@@ -54,14 +54,14 @@ TEST(NeuronTest, NegativeInput)
 	Neuron neuron;
 	double I=-1.00;
 	// first update test
-	neuron.update_test(I,0);
+	neuron.update_test(I);
 	EXPECT_EQ(-20.0*(1.0-std::exp(-0.1/20.0)), neuron.getV());
 	neuron.setV(0);
 	
 	//test after numerous updates
 	for(int i(0); i<10000; ++i)
 	{
-		neuron.update_test(I,i);
+		neuron.update_test(I);
 	}
 	// The membran potential should tend to -20
 	EXPECT_GT(1E-3, std::fabs(-19.999 -neuron.getV()));
@@ -72,7 +72,7 @@ TEST(NeuronTest, NegativeInput)
 	I=0;
 	for(int i(0); i<2000; ++i)
 	{
-		neuron.update_test(I,i);
+		neuron.update_test(I);
 	}
 	EXPECT_NEAR(0, neuron.getV(), 1e-3);
 }
@@ -91,10 +91,10 @@ TEST (NeuronTest, SpikeTimes)
 	//waiting for the first spike 
 	for(int i(0); i<924; ++i)
 	{
-		neuron.update_test(I,i);
+		neuron.update_test(I);
 	}
 	EXPECT_EQ(0, neuron.getNb_Spikes_());
-	neuron.update_test(I,1);
+	neuron.update_test(I);
 	EXPECT_EQ(1, neuron.getNb_Spikes_());
 	EXPECT_EQ(0.0, neuron.getV());
 	
@@ -102,9 +102,9 @@ TEST (NeuronTest, SpikeTimes)
     neuron.setV(0); 
     for(int i(0); i<1869; ++i)
     {
-		neuron.update_test(I,i);
+		neuron.update_test(I);
 	}
-	neuron.update_test(I,1869);
+	neuron.update_test(I);
 	EXPECT_EQ(2,neuron.getNb_Spikes_());
 }
 
@@ -122,7 +122,7 @@ TEST(NeuronTest, StandaloneSimulation)
 	// we are waiting for 3 spikes 
 	for( int i(0); i<4000; ++i)
 	{
-		neuron.update_test(I,i);
+		neuron.update_test(I);
 	}
 	EXPECT_EQ(4, neuron.getNb_Spikes_());
 }
@@ -131,7 +131,7 @@ TEST(NeuronTest, StandaloneSimulation)
      * we wait for the first spike and see the impact on the other neuron2
      ***************************************************************************************************************************/
      
-TEST(TwoNeurons, NoPSSpike) 
+TEST(TwoNeurons, NoSpike) 
 {
 	Neuron neuron1, neuron2;
 	int delay = 15;
@@ -139,48 +139,18 @@ TEST(TwoNeurons, NoPSSpike)
 	//we wait for the first spike and see the impact on the other neuron2
 	for(auto i=0; i<925+delay; ++i)
 	{
-		neuron1.update_test(I,i);
+		neuron1.update_test(I);
 		if(neuron1.spike(20))
 		{
-			neuron1.update_test(I,1);
-			neuron2.receive_spike(0.1);
+			neuron1.update_test(I);
+			neuron2.receive_spike(0.1,i);
 			EXPECT_EQ(0.0, neuron1.getV());
 		}	
-		neuron2.update_test(0,i);
+		neuron2.update_test(0);
 	}
 	EXPECT_NEAR(0.1, neuron2.getV(),1e-3);
 }
 
-/*****************************************************************************************************************************//**
-     * we wait for the second spike of neuron 1 to see neuron 2 spike because neuron1 did not have time to reach the treshold
-     ***************************************************************************************************************************/
-
-TEST(TwoNeurons, WithPSSpike) // a revoir
-{
-	Neuron neuron1, neuron2;
-	int delay = 15;
-	double I1=1.01;
-	double I2=1.0;
-	// we wait for the second spike of neuron 1 to see neuron 2 spike 
-	for(auto i=0; i<1870+delay; ++i)
-	{
-		neuron1.update_test(I1,i);
-		if(neuron1.update_test(I1,i))
-		{
-			neuron2.receive_spike(0.1);
-			EXPECT_EQ(0, neuron2.getV());	
-		}
-		neuron2.update_test(I2,1871);
-	}
-	//just before neuron 2 spike
-	EXPECT_EQ(0, neuron2.getNb_Spikes_());
-	
-	neuron2.update_test(I2,1872);
-	
-	EXPECT_EQ(0,neuron2.getV());
-	EXPECT_EQ(1, neuron2.getNb_Spikes_());
-
-}
 	
 int main(int argc, char **argv)
 {
@@ -188,3 +158,4 @@ int main(int argc, char **argv)
 	return RUN_ALL_TESTS();
 }	
 	
+

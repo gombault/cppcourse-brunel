@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <random>
 using namespace std;
 
 
@@ -27,7 +28,7 @@ int T_Clock; //!< local time
 
 static const int D=15 ; //!< delay 
 
-vector<int> buffer; //!< store the J receive at the different t_spike +D 
+vector<double> buffer; //!< store the J receive at the different t_spike +D 
 
 double Vext;
 
@@ -38,7 +39,7 @@ double Vext;
 int Vth=20;
 double h=0.1;
 double V_update;
-bool Spike = false;
+
 
 
 public:
@@ -84,15 +85,15 @@ void setV(double v);
 /**
  * @brief update the neuron from time t to t+T where T=n*h with poisson
  * @param I the input current
- * @param arrival the time when we call update
+ * @param poisson for the background noise of the network
  * @return if it spike or not
  */
-bool update(double I, int arrival); 
+bool update(double I,double poisson); 
 
 /**
  * @brief return true if have spiked and set his membran potentiel to 0 during 2ms
  * @param Vth the treeshold value which is 20
- * @param simtime the simulation time
+ * @param simtime time of simulation
  * @return if it is refractory or not 
  */
 bool IsNeuron_refractory(double Vth, int simtime); 
@@ -113,15 +114,15 @@ bool spike(double vth);
 /**
  * @brief receive a spike at time arrival with J, if more than a spike arrive at the same time we sum the indices
  * @param J the current send by the neuron which have spiked
+ * @param arrival time when the spike occure
  */
-void receive_spike(double J);
+void receive_spike(double J, int arrival);
 
 /**
  * @brief update the neuron from time t to t+T where T=n*h without poisson
  * @param I the input current
- * @param arrival the time when we call update
  * @return if it spike or not
  */
-bool update_test(double I,int arrival);
+bool update_test(double I);
 	
 };

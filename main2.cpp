@@ -17,7 +17,7 @@ double J(0.1); // current passed to other neurons when spike
      *    creation of a fold where we can write the membran potential value
      ****************************************************************************************/
 
-ofstream fichier("potentielmembrane.txt", ios::out | ios::app); 
+ofstream fichier("potentielmembrane2.txt", ios::out | ios::app); 
 fichier.clear();
 
 /*******************************************************************************************
@@ -60,14 +60,14 @@ while(simtime < T_stop)
 
 	 if (neuron1.getV() > Vth) // if neuron1 spike, his potential membran go back to 0 and neuron2 shows a respond with a delay of 1,5ms 
 	{
-		neuron1.update(input_current, simtime);
-		neuron2.receive_spike(J);
+		neuron1.update_test(input_current);
+		neuron2.receive_spike(J, simtime);
 	    fichier << " il y a eu " << neuron1.getNb_Spikes_() <<" spikes " << endl;
 	}
 	else // else, neuron 1 is update at every step with a current of I, same with neuron2 with a current of 0 untill neuron2 potentiel value go back to 0 
 	{
-		neuron1.update(input_current,simtime);
-		neuron2.update(0,simtime);
+		neuron1.update_test(input_current);
+		neuron2.update_test(1);
 	}	
 	
 		

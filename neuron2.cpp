@@ -15,6 +15,7 @@ Neuron :: Neuron ()
 			 Nb_Spikes_=0; 
 			 Vext=2;
 			 buffer.resize(D+1);
+			 
 			 for (size_t i = 0; i< buffer.size(); ++i)
 			 {
 				 buffer[i] = 0;
@@ -81,17 +82,17 @@ void Neuron :: fill_T(double t) // fill the vector with the neuron's times of sp
 }	
 	
 
-bool Neuron :: update(double I,int arrival)
+bool Neuron :: update(double I, double poisson)
 {
-	T_Clock = arrival;
-	
 	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
      * we initialize the bool Spike to true (this bool is what the fonction return) else, it is false
      * we store the time of the spike in the vector T of the neuron
      * we put the potential membran of the neuron at 0
      ****************************************************************************************************/
-	
+	 bool Spike=false;
+	 int set_spike = ((T_Clock)%buffer.size());  //for the index of the tab where we have to look in the buffer 
+	 
 	if (spike(Vth))
 	{
 		++ Nb_Spikes_;
@@ -99,17 +100,13 @@ bool Neuron :: update(double I,int arrival)
 		V=0.0;
 		Spike=true;
 	} 
-	else 
-	{
-		Spike=false;
-	}
 	
 	/****************************************************************************************************
      *  if the neuron has spiked, it is refractory
      * hisd potential membrane is 0 during 20 steps
      ****************************************************************************************************/
 	
-	if  ((!T.empty()) and ((T_Clock - T.back()) <= 20 ))
+	if  ((!T.empty()) and ((T_Clock - T.back()) < 20 ))
 	 {
 		 V=0.0;
 	 }
@@ -121,36 +118,30 @@ bool Neuron :: update(double I,int arrival)
 	 
 	 else
 	 {  
-	     int set_spike = ((T_Clock)%buffer.size()); //for the index of the tab where we have to look in the buffer 
-	     
-		 static poisson_distribution<> poisson(0.9);  // poisson 
-		 static random_device rd;	
-		 static mt19937 gen(rd());
-		 
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson(gen)*0.1; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson*0.1; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
 		 V=V_update; 
 	 }	
 	 
-	 buffer[(T_Clock)%buffer.size()]=0; // put the case to 0 
+	 buffer[(set_spike)%buffer.size()]=0; // put the case to 0 
+	 
 	 ++T_Clock;
 	 return Spike;
  }                                                                                                            
 
-void Neuron :: receive_spike (double J) // receive a spike at time arrival with J 
+void Neuron :: receive_spike (double J, int arrival) // receive a spike at time arrival with J 
 {	
-	buffer[(T_Clock + D)%buffer.size()]+=J; // store the J in the good index of the buffer 
+	buffer[(arrival+D)%buffer.size()]+=J; // store the J in the good index of the buffer 
 }	 
 
-bool Neuron :: update_test(double I,int arrival)
+bool Neuron :: update_test(double I)
 {
-	T_Clock = arrival;
-	
 	/****************************************************************************************************
      *  if the neuron spikes, we increment Nb_Spikes,
      * we initialize the bool Spike to true (this bool is what the fonction return) else, it is false
      * we store the time of the spike in the vector T of the neuron
      * we put the potential membran of the neuron at 0
      ****************************************************************************************************/
+     bool Spike = false;
 	
 	if (spike(Vth))
 	{
@@ -159,17 +150,13 @@ bool Neuron :: update_test(double I,int arrival)
 		V=0.0;
 		Spike=true;
 	} 
-	else 
-	{
-		Spike=false;
-	}
 	
 	/*****************************************************************************************************
      *  if the neuron has spiked, it is refractory
      * hisd potential membrane is 0 during 20 steps
      ****************************************************************************************************/
 	
-	if  ((!T.empty()) and ((T_Clock - T.back()) <= 20 ))
+	if  ((!T.empty()) and ((T_Clock - T.back()) < 20 ))
 	 {
 		 V=0.0;
 	 }

@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    int T_stop(12000); // time where the simulation ends 
+    int T_stop(2000); // time where the simulation ends 
     int simtime(0); // simulation time
     
     /****************************************************************
