@@ -13,7 +13,6 @@ Neuron :: Neuron ()
 			 C=1; 
 			 R=20;
 			 Nb_Spikes_=0; 
-			 Vext=2;
 			 buffer.resize(D+1);
 			 
 			 for (size_t i = 0; i< buffer.size(); ++i)
@@ -68,7 +67,7 @@ bool Neuron :: spike(double Vth) // return true if the neuron spike
 	
 bool Neuron:: IsNeuron_refractory(double Vth, int simtime) // return true if a neuron is refractory, during refractory time (20 step) V=0 
 {
-	if ((V=0) and ((simtime - T.back()) <= 20 ))
+	if ((V=0) and ((simtime - T.back()) < Vth ))
 	{
 		return true;
 	}
@@ -118,7 +117,7 @@ bool Neuron :: update(double I, double poisson)
 	 
 	 else
 	 {  
-		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson*0.1; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
+		 V_update=exp(-h/(R*C))*V + I*R*(1-exp(-h/(R*C))) + buffer[set_spike] + poisson*h; // updates the neuron state from time t to t+T ou T=n*h with n  the nbre of step 
 		 V=V_update; 
 	 }	
 	 
@@ -156,7 +155,7 @@ bool Neuron :: update_test(double I)
      * hisd potential membrane is 0 during 20 steps
      ****************************************************************************************************/
 	
-	if  ((!T.empty()) and ((T_Clock - T.back()) < 20 ))
+	if  ((!T.empty()) and ((T_Clock - T.back()) < Vth))
 	 {
 		 V=0.0;
 	 }

@@ -137,7 +137,7 @@ TEST(TwoNeurons, NoSpike)
 	int delay = 15;
 	double I=1.01;
 	//we wait for the first spike and see the impact on the other neuron2
-	for(auto i=0; i<925+delay; ++i)
+	for(int i=0; i<925+delay; ++i)
 	{
 		neuron1.update_test(I);
 		if(neuron1.spike(20))
@@ -151,6 +151,27 @@ TEST(TwoNeurons, NoSpike)
 	EXPECT_NEAR(0.1, neuron2.getV(),1e-3);
 }
 
+TEST(TwoNeurons, WithSpike) 
+{
+	Neuron neuron1, neuron2;
+	int delay = 15;
+	double I1=1.01;
+	double I2=1.0;
+	//we wait for the first spike and see the impact on the other neuron2
+	for(int i=0; i<1869+delay; ++i)
+	{
+		neuron1.update_test(I1);
+		if(neuron1.spike(20))
+		{
+			neuron1.update_test(I1);
+			neuron2.receive_spike(0.1,i);
+			EXPECT_EQ(0.0, neuron1.getV());
+		}	
+		neuron2.update_test(I2);
+	}
+	EXPECT_EQ(1, neuron2.getNb_Spikes_());
+	EXPECT_EQ(0, neuron2.getV());
+}
 	
 int main(int argc, char **argv)
 {

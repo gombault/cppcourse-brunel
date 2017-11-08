@@ -14,7 +14,8 @@ Network :: Network ()
 			Ce=1000;
 			Ci=250;
 			Je=0.1;
-			Ji=-0.45;
+			Ji=-0.5;
+			Vext=2;
 			
 			 for (int i=0; i<Ntot; ++i) // initialisation of connections vector to 0 
 			 {
@@ -59,7 +60,7 @@ void Network :: update(int time)
 	
 		 static random_device rd;	
 		 static mt19937 gen(rd());
-		 static poisson_distribution<> poisson(0.9);  // poisson 
+		 static poisson_distribution<> poisson(Vext);  // poisson 
 	ofstream fichier("SpikesfigureD.gdf", ios::out | ios::app); // we create a fold to make the plot 
 
 	for(int i=0; i<Ntot; ++i) 

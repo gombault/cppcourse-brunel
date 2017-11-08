@@ -16,8 +16,9 @@ class Network
 	double Je; //!< currant of excitatory neuron 
 	double Ji; //!< currant of inhibitory neuron
 	int Cext; //!<connections from the rest of the brain, this is randomly generated spikes cf Poisson 
-	vector<vector<double>> connection; //!< connections tab 
+	vector<vector<double> > connection; //!< connections tab 
 	vector<Neuron>tab_neuron; //!< neurons tab
+	double Vext;
 	
 	public:
 	

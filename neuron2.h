@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <array>
 #include <random>
 using namespace std;
 
@@ -29,8 +28,6 @@ int T_Clock; //!< local time
 static const int D=15 ; //!< delay 
 
 vector<double> buffer; //!< store the J receive at the different t_spike +D 
-
-double Vext;
 
 /**************************************************************************
      *    constants 
